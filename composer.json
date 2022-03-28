@@ -21,9 +21,18 @@
         "illuminate/database": "~5.4",
         "illuminate/events": "~5.4"
     },
+    "require-dev": {
+        "orchestra/testbench": "3.4.*",
+        "phpunit/phpunit": "*"
+    },
     "autoload": {
         "psr-4": {
             "Firebird\\": "src/Firebird/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "FirebirdTests\\": "tests/"
         }
     },
     "config": {
