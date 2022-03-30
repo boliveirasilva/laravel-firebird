@@ -14,22 +14,22 @@ class SchemaTest extends TestCase
     /** @test */
     public function it_has_table()
     {
-        $this->assertTrue(Schema::hasTable('users'));
+        $this->assertTrue(Schema::hasTable('testbench_users'));
         $this->assertFalse(Schema::hasTable('foo'));
     }
 
     /** @test */
     public function it_has_column()
     {
-        $this->assertTrue(Schema::hasColumn('users', 'id'));
-        $this->assertFalse(Schema::hasColumn('users', 'foo'));
+        $this->assertTrue(Schema::hasColumn('testbench_users', 'id'));
+        $this->assertFalse(Schema::hasColumn('testbench_users', 'foo'));
     }
 
     /** @test */
     public function it_has_columns()
     {
-        $this->assertTrue(Schema::hasColumns('users', ['id', 'country']));
-        $this->assertFalse(Schema::hasColumns('users', ['id', 'foo']));
+        $this->assertTrue(Schema::hasColumns('testbench_users', ['id', 'country']));
+        $this->assertFalse(Schema::hasColumns('testbench_users', ['id', 'foo']));
     }
 
     /** @test */

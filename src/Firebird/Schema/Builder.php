@@ -5,17 +5,40 @@ use Illuminate\Database\Schema\Builder as BaseBuilder;
 
 class Builder extends BaseBuilder
 {
-    // public function drop($table)
-    // {
-    //     dump(['method' => __METHOD__, 'table' => $table]);
-    //     parent::drop($table);
-    // }
+    use FirebirdAutoIncrement;
 
-    // public function dropIfExists($table)
-    // {
-    //     dump(['method' => __METHOD__, 'table' => $table]);
-    //     parent::dropIfExists($table);
-    // }
+    /**
+     * Create a new table on the schema.
+     *
+     * @param  string $table
+     * @param  \Closure $callback
+     * @return void
+     */
+    public function create($table, \Closure $callback)
+    {
+        // $table = strtoupper($table);
+        $blueprint = $this->createBlueprint($table);
+
+        $blueprint->create();
+
+        $callback($blueprint);
+
+        $this->build($blueprint);
+
+        $this->createAutoIncrementObjects($blueprint, $table);
+    }
+
+    public function drop($table)
+    {
+        $this->dropAutoIncrementObjects($table);
+        parent::drop($table);
+    }
+
+    public function dropIfExists($table)
+    {
+        $this->dropAutoIncrementObjects($table);
+        parent::dropIfExists($table);
+    }
 
     // public function getColumnListing($table)
     // {

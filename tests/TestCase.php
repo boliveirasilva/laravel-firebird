@@ -10,7 +10,12 @@ class TestCase extends OrchestraTestCase
     protected function setUp()
     {
         parent::setUp();
+
         $this->withFactories(__DIR__ . '/Support/Factories');
+        // $this->artisan('migrate', [
+        //     '--database' => 'testbench',
+        //     '--realpath' => realpath(__DIR__ . '/Support/Migrations'),
+        // ])->run();
     }
 
     protected function getPackageProviders($app)
@@ -28,7 +33,7 @@ class TestCase extends OrchestraTestCase
      */
     protected function defineDatabaseMigrations()
     {
-        $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
+        $this->loadMigrationsFrom(__DIR__ . '/Support/Migrations');
     }
 
     /**
