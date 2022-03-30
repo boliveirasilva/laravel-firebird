@@ -4,7 +4,7 @@ use Doctrine\Instantiator\Exception\InvalidArgumentException;
 use Illuminate\Database\Connectors\Connector;
 use Illuminate\Database\Connectors\ConnectorInterface;
 
-class FirebirdConnector extends Connector implements ConnectorInterface {
+class _FirebirdConnector extends Connector implements ConnectorInterface {
 
   /**
    * Establish a database connection.

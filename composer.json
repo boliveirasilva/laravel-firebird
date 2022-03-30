@@ -16,6 +16,7 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=5.6.4",
+        "ext-pdo": "*",
         "illuminate/support": "~5.4",
         "illuminate/container": "~5.4",
         "illuminate/database": "~5.4",
@@ -23,6 +24,7 @@
     },
     "require-dev": {
         "orchestra/testbench": "3.4.*",
+        "orchestra/database": "*",
         "phpunit/phpunit": "*"
     },
     "autoload": {

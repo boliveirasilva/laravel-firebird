@@ -29,11 +29,12 @@
 // }
 
 /** @var Illuminate\Database\Eloquent\Factory $factory */
-$factory->define(FirebirdTests\Support\Models\User::class, function (Faker\Generator $faker) {
+$factory->define(FirebirdTests\Support\Models\TestbenchUser::class, function (Faker\Generator $faker) {
     return [
         'id' => $faker->unique()->numberBetween(1),
         'name' => $faker->name,
         'email' => $faker->email,
+        'password' => $faker->password,
         'city' => $faker->city,
         'state' => $faker->state,
         'post_code' => $faker->postcode,

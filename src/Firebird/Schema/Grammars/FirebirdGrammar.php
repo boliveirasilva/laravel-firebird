@@ -5,7 +5,7 @@ namespace Firebird\Schema\Grammars;
 use Illuminate\Database\Schema\Grammars\Grammar;
 use Illuminate\Support\Fluent;
 use Illuminate\Database\Schema\Blueprint;
-use Firebird\Connection;
+use Firebird\FirebirdConnection;
 
 class FirebirdGrammar extends Grammar
 {
@@ -15,14 +15,24 @@ class FirebirdGrammar extends Grammar
      *
      * @var array
      */
-    protected $modifiers = array('Default', 'Nullable');
+    protected $modifiers = ['Increment', 'Default', 'Nullable'];
 
     /**
      * The columns available as serials.
      *
      * @var array
      */
-    protected $serials = array('integer');
+    protected $serials = ['integer'];
+
+    /**
+     * Compile the query to determine if a table exists.
+     *
+     * @return string
+     */
+    public function compileTableExists()
+    {
+        return "SELECT RDB\$RELATION_NAME FROM RDB\$RELATIONS WHERE RDB\$RELATION_NAME = ?";
+    }
 
     /**
      * Compile the query to determine the list of columns.
@@ -45,7 +55,7 @@ class FirebirdGrammar extends Grammar
      *
      * @return string
      */
-    public function compileCreate(Blueprint $blueprint, Fluent $command, Connection $connection)
+    public function compileCreate(Blueprint $blueprint, Fluent $command, FirebirdConnection $connection)
     {
         $columns = implode(', ', $this->getColumns($blueprint));
 
@@ -70,16 +80,6 @@ class FirebirdGrammar extends Grammar
             str_replace('?', $table, $this->compileTableExists()),
             $this->compileDrop($blueprint, $command)
         );
-    }
-
-    /**
-     * Compile the query to determine if a table exists.
-     *
-     * @return string
-     */
-    public function compileTableExists()
-    {
-        return "SELECT RDB\$RELATION_NAME FROM RDB\$RELATIONS WHERE RDB\$RELATION_NAME = ?";
     }
 
     /**
@@ -235,13 +235,30 @@ class FirebirdGrammar extends Grammar
      * @param Blueprint $blueprint
      * @param Fluent    $column
      *
-     * @return string|null
+     * @return string|void
      */
     protected function modifyDefault(Blueprint $blueprint, Fluent $column)
     {
         if (!is_null($column->default)) {
             return " default " . $this->getDefaultValue($column->default);
         }
+    }
+
+    /**
+     * Get the SQL for an auto-increment column modifier.
+     *
+     * @param Blueprint $blueprint
+     * @param Fluent    $column
+     *
+     * @return string|null
+     */
+    protected function modifyIncrement(Blueprint $blueprint, Fluent $column)
+    {
+        if (in_array($column->type, $this->serials) && $column->autoIncrement) {
+            return ' primary key';
+        }
+
+        return null;
     }
 
     /**

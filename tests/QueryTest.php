@@ -3,8 +3,8 @@
 namespace FirebirdTests;
 
 use FirebirdTests\Support\MigrateDatabase;
-use FirebirdTests\Support\Models\Order;
-use FirebirdTests\Support\Models\User;
+use FirebirdTests\Support\Models\TestbenchOrder;
+use FirebirdTests\Support\Models\TestbenchUser;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -21,15 +21,15 @@ class QueryTest extends TestCase
     /** @test */
     public function it_can_get()
     {
-        factory(Order::class, 3)->create();
-        $users = DB::table('users')->get();
+        factory(TestbenchOrder::class, 3)->create();
+        $users = DB::table('testbench_users')->get();
 
         $this->assertCount(3, $users);
         $this->assertInstanceOf(Collection::class, $users);
         $this->assertTrue(is_object($users->first()));
         $this->assertTrue(is_array($users->toArray()));
 
-        $orders = DB::table('orders')->get();
+        $orders = DB::table('testbench_orders')->get();
 
         $this->assertCount(3, $orders);
         $this->assertInstanceOf(Collection::class, $orders);
@@ -40,13 +40,13 @@ class QueryTest extends TestCase
     /** @test */
     public function it_can_select()
     {
-        factory(User::class)->create([
+        factory(TestbenchUser::class)->create([
             'name' => 'Anna',
             'city' => 'Sydney',
             'country' => 'Australia',
         ]);
 
-        $result = DB::table('users')
+        $result = DB::table('testbench_users')
             ->select(['name', 'city', 'country'])
             ->first();
 
@@ -64,13 +64,13 @@ class QueryTest extends TestCase
     /** @test */
     public function it_can_select_with_aliases()
     {
-        factory(User::class)->create([
+        factory(TestbenchUser::class)->create([
             'name' => 'Anna',
             'city' => 'Sydney',
             'country' => 'Australia',
         ]);
 
-        $result = DB::table('users')
+        $result = DB::table('testbench_users')
             ->select([
                 'name as USER_NAME',
                 'city as user_city',
@@ -92,11 +92,11 @@ class QueryTest extends TestCase
     /** @test */
     public function it_can_select_distinct()
     {
-        factory(Order::class, 1)->create(['price' => 10]);
-        factory(Order::class, 10)->create(['price' => 50]);
-        factory(Order::class, 5)->create(['price' => 100]);
+        factory(TestbenchOrder::class, 1)->create(['price' => 10]);
+        factory(TestbenchOrder::class, 10)->create(['price' => 50]);
+        factory(TestbenchOrder::class, 5)->create(['price' => 100]);
 
-        $results = DB::table('orders')->select('price')->distinct()->get();
+        $results = DB::table('testbench_orders')->select('price')->distinct()->get();
 
         $this->assertCount(3, $results);
     }
@@ -104,11 +104,11 @@ class QueryTest extends TestCase
     /** @test */
     public function it_can_filter_where_with_results()
     {
-        factory(User::class, 5)->create(['name' => 'Frank']);
-        factory(User::class, 2)->create(['name' => 'Inigo']);
-        factory(User::class, 7)->create(['name' => 'Ashley']);
+        factory(TestbenchUser::class, 5)->create(['name' => 'Frank']);
+        factory(TestbenchUser::class, 2)->create(['name' => 'Inigo']);
+        factory(TestbenchUser::class, 7)->create(['name' => 'Ashley']);
 
-        $results = DB::table('users')
+        $results = DB::table('testbench_users')
             ->where('name', 'Frank')
             ->get();
 
@@ -120,9 +120,9 @@ class QueryTest extends TestCase
     /** @test */
     public function it_can_filter_where_without_results()
     {
-        factory(User::class, 25)->create();
+        factory(TestbenchUser::class, 25)->create();
 
-        $results = DB::table('users')
+        $results = DB::table('testbench_users')
             ->where('id', 26)
             ->get();
 

@@ -5,7 +5,7 @@ namespace FirebirdTests\Support\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class User extends Model
+class TestbenchUser extends Model
 {
     use SoftDeletes;
 
@@ -15,6 +15,6 @@ class User extends Model
 
     public function orders()
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(TestbenchOrder::class);
     }
 }

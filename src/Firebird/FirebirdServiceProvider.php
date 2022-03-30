@@ -1,61 +1,36 @@
-<?php namespace Firebird;
+<?php
+namespace Firebird;
 
 use Illuminate\Support\ServiceProvider;
-use Firebird\ConnectionFactory as FirebirdConnectionFactory;
-use Firebird\DatabaseManager as FirebirdDatabaseManager;
+use Firebird\Connectors\FirebirdConnector;
+use Illuminate\Database\Connection;
 
-
-class FirebirdServiceProvider extends ServiceProvider {
-
-  /**
-   * Bootstrap the application services.
-   *
-   * @return void
-   */
-  public function boot()
-  {
-    Model::setConnectionResolver($this->app['db']);
-
-    Model::setEventDispatcher($this->app['events']);
-  }
-
-  /**
-   * Register the application services.
-   * This is where the connection gets registered
-   *
-   * @return void
-   */
-  public function register()
-  {
-    $this->registerQueueableEntityResolver();
-
-    // The connection factory is used to create the actual connection instances on
-    // the database. We will inject the factory into the manager so that it may
-    // make the connections while they are actually needed and not of before.
-    $this->app->singleton('db.factory', function($app)
+class FirebirdServiceProvider extends ServiceProvider
+{
+    /**
+     * Bootstrap the application services.
+     *
+     * @return void
+     */
+    public function boot()
     {
-      return new FirebirdConnectionFactory($app);
-    });
+        Model::setConnectionResolver($this->app['db']);
 
-    // The database manager is used to resolve various connections, since multiple
-    // connections might be managed. It also implements the connection resolver
-    // interface which may be used by other components requiring connections.
-    $this->app->singleton('db', function($app)
-    {
-      return new FirebirdDatabaseManager($app, $app['db.factory']);
-    });
-  }
+        Model::setEventDispatcher($this->app['events']);
+    }
 
-  /**
-   * Register the queueable entity resolver implementation.
-   *
-   * @return void
-   */
-  protected function registerQueueableEntityResolver()
-  {
-    $this->app->singleton('Illuminate\Contracts\Queue\EntityResolver', function()
+    /**
+     * Register the application services.
+     * This is where the connection gets registered
+     *
+     * @return void
+     */
+    public function register()
     {
-      return new Eloquent\QueueEntityResolver;
-    });
-  }
+        Connection::resolverFor('firebird', function ($connection, $database, $prefix, $config) {
+            $connector = new FirebirdConnector();
+            $connection = $connector->connect($config);
+            return new FirebirdConnection($connection, $database, $prefix, $config);
+        });
+    }
 }

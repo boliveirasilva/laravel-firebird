@@ -2,8 +2,6 @@
 
 namespace FirebirdTests\Support;
 
-// use FirebirdTests\Support\Factories\OrdersFactory;
-// use FirebirdTests\Support\Factories\UsersFactory;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -27,33 +25,55 @@ trait MigrateDatabase
 
     public function tearDown()
     {
-        DB::select('DELETE FROM "orders"');
-        DB::select('DELETE FROM "users"');
+        DB::select('DELETE FROM "testbench_orders"');
+        DB::select('DELETE FROM "testbench_users"');
 
         // Reset the static ids on the factory, as Firebird <= 3 does not
         // support auto-incrementing ids.
         // TODO: Like to figure out a way of using auto-incrementing ids for
         // newer versions of Firebird, but not ready to drop v2.5 support yet.
-        // UsersFactory::$id = 1;
-        // OrdersFactory::$id = 1;
 
         parent::tearDown();
     }
 
     public function createTables()
     {
-        DB::select('CREATE TABLE "users" ("id" INTEGER NOT NULL, "name" VARCHAR(255) NOT NULL, "email" VARCHAR(255) NOT NULL, "city" VARCHAR(255), "state" VARCHAR(255), "post_code" VARCHAR(255), "country" VARCHAR(255), "created_at" TIMESTAMP, "updated_at" TIMESTAMP, "deleted_at" TIMESTAMP)');
-        DB::select('ALTER TABLE "users" ADD PRIMARY KEY ("id")');
+        DB::select('CREATE TABLE "testbench_users" (
+            "id" INTEGER NOT NULL, 
+            "name" VARCHAR(255) NOT NULL, 
+            "email" VARCHAR(255) NOT NULL, 
+            "password" VARCHAR(255), 
+            "city" VARCHAR(255), 
+            "state" VARCHAR(255), 
+            "post_code" VARCHAR(255), 
+            "country" VARCHAR(255), 
+            "created_at" TIMESTAMP, 
+            "updated_at" TIMESTAMP, 
+            "deleted_at" TIMESTAMP
+        )');
 
-        DB::select('CREATE TABLE "orders" ("id" INTEGER NOT NULL, "user_id" INTEGER NOT NULL, "name" VARCHAR(255) NOT NULL, "price" INTEGER NOT NULL, "quantity" INTEGER NOT NULL, "created_at" TIMESTAMP, "updated_at" TIMESTAMP, "deleted_at" TIMESTAMP)');
-        DB::select('ALTER TABLE "orders" ADD CONSTRAINT orders_user_id_foreign FOREIGN KEY ("user_id") REFERENCES "users" ("id")');
-        DB::select('ALTER TABLE "orders" ADD PRIMARY KEY ("id")');
+        DB::select('ALTER TABLE "testbench_users" ADD PRIMARY KEY ("id")');
+
+
+        DB::select('CREATE TABLE "testbench_orders" (
+            "id" INTEGER NOT NULL, 
+            "user_id" INTEGER NOT NULL, 
+            "name" VARCHAR(255) NOT NULL, 
+            "price" INTEGER NOT NULL, 
+            "quantity" INTEGER NOT NULL, 
+            "created_at" TIMESTAMP, 
+            "updated_at" TIMESTAMP, 
+            "deleted_at" TIMESTAMP
+        )');
+
+        DB::select('ALTER TABLE "testbench_orders" ADD CONSTRAINT orders_user_id_foreign FOREIGN KEY ("user_id") REFERENCES "testbench_users" ("id")');
+        DB::select('ALTER TABLE "testbench_orders" ADD PRIMARY KEY ("id")');
     }
 
     public function dropTables()
     {
         try {
-            DB::select('DROP TABLE "orders"');
+            DB::select('DROP TABLE "testbench_orders"');
         } catch (QueryException $e) {
             // Suppress the "table does not exist" exception, as we want to
             // replicate dropIfExists() functionality without using the Schema
@@ -64,7 +84,7 @@ trait MigrateDatabase
         }
 
         try {
-            DB::select('DROP TABLE "users"');
+            DB::select('DROP TABLE "testbench_users"');
         } catch (QueryException $e) {
             // Suppress the "table does not exist" exception, as we want to
             // replicate dropIfExists() functionality without using the Schema
