@@ -25,8 +25,8 @@ trait MigrateDatabase
 
     public function tearDown()
     {
-        DB::select('DELETE FROM "testbench_orders"');
-        DB::select('DELETE FROM "testbench_users"');
+        DB::select('DELETE FROM TESTBENCH_ORDERS');
+        DB::select('DELETE FROM TESTBENCH_USERS');
 
         // Reset the static ids on the factory, as Firebird <= 3 does not
         // support auto-incrementing ids.
@@ -38,42 +38,42 @@ trait MigrateDatabase
 
     public function createTables()
     {
-        DB::select('CREATE TABLE "testbench_users" (
-            "id" INTEGER NOT NULL, 
-            "name" VARCHAR(255) NOT NULL, 
-            "email" VARCHAR(255) NOT NULL, 
-            "password" VARCHAR(255), 
-            "city" VARCHAR(255), 
-            "state" VARCHAR(255), 
-            "post_code" VARCHAR(255), 
-            "country" VARCHAR(255), 
-            "created_at" TIMESTAMP, 
-            "updated_at" TIMESTAMP, 
-            "deleted_at" TIMESTAMP
+        DB::select('CREATE TABLE TESTBENCH_USERS (
+            ID INTEGER NOT NULL, 
+            NAME VARCHAR(255) NOT NULL, 
+            EMAIL VARCHAR(255) NOT NULL, 
+            PASSWORD VARCHAR(255), 
+            CITY VARCHAR(255), 
+            STATE VARCHAR(255), 
+            POST_CODE VARCHAR(255), 
+            COUNTRY VARCHAR(255), 
+            CREATED_AT TIMESTAMP, 
+            UPDATED_AT TIMESTAMP, 
+            DELETED_AT TIMESTAMP
         )');
 
-        DB::select('ALTER TABLE "testbench_users" ADD PRIMARY KEY ("id")');
+        DB::select('ALTER TABLE TESTBENCH_USERS ADD PRIMARY KEY (ID)');
 
 
-        DB::select('CREATE TABLE "testbench_orders" (
-            "id" INTEGER NOT NULL, 
-            "user_id" INTEGER NOT NULL, 
-            "name" VARCHAR(255) NOT NULL, 
-            "price" INTEGER NOT NULL, 
-            "quantity" INTEGER NOT NULL, 
-            "created_at" TIMESTAMP, 
-            "updated_at" TIMESTAMP, 
-            "deleted_at" TIMESTAMP
+        DB::select('CREATE TABLE TESTBENCH_ORDERS (
+            ID INTEGER NOT NULL, 
+            USER_ID INTEGER NOT NULL, 
+            NAME VARCHAR(255) NOT NULL, 
+            PRICE INTEGER NOT NULL, 
+            QUANTITY INTEGER NOT NULL, 
+            CREATED_AT TIMESTAMP, 
+            UPDATED_AT TIMESTAMP, 
+            DELETED_AT TIMESTAMP
         )');
 
-        DB::select('ALTER TABLE "testbench_orders" ADD CONSTRAINT orders_user_id_foreign FOREIGN KEY ("user_id") REFERENCES "testbench_users" ("id")');
-        DB::select('ALTER TABLE "testbench_orders" ADD PRIMARY KEY ("id")');
+        DB::select('ALTER TABLE TESTBENCH_ORDERS ADD CONSTRAINT ORDERS_USER_ID_FOREIGN FOREIGN KEY (USER_ID) REFERENCES TESTBENCH_USERS (ID)');
+        DB::select('ALTER TABLE TESTBENCH_ORDERS ADD PRIMARY KEY (ID)');
     }
 
     public function dropTables()
     {
         try {
-            DB::select('DROP TABLE "testbench_orders"');
+            DB::select('DROP TABLE TESTBENCH_ORDERS');
         } catch (QueryException $e) {
             // Suppress the "table does not exist" exception, as we want to
             // replicate dropIfExists() functionality without using the Schema
@@ -84,7 +84,7 @@ trait MigrateDatabase
         }
 
         try {
-            DB::select('DROP TABLE "testbench_users"');
+            DB::select('DROP TABLE TESTBENCH_USERS');
         } catch (QueryException $e) {
             // Suppress the "table does not exist" exception, as we want to
             // replicate dropIfExists() functionality without using the Schema

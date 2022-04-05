@@ -42,25 +42,19 @@ class Trigger
         $table  = $this->wrapValue($table);
         $column = $this->wrapValue($column);
 
-        // dump([__METHOD__, 'SQL>>
-        //                 create trigger "' . $triggerName . '"
-        //                     active before insert
-        //                     on "' . $table . '"
-        //                 as
-        //                 begin
-        //                     if (new."' . $column . '" is null)
-        //                     then new."' . $column . '" = next value for "' . $sequenceName . '";
-        //                 end']);
-        return $this->connection->statement('
-            create trigger "' . $triggerName . '"
+        $sql = "
+            create trigger {$triggerName}
                 active before insert 
-                on "' . $table . '"
+                on {$table}
             as
             begin
-                if (new."' . $column . '" is null)
-                then new."' . $column . '" = next value for "' . $sequenceName . '";
+                if (new.{$column} is null)
+                then new.{$column} = next value for {$sequenceName};
             end
-        ');
+        ";
+
+        // dump(['method' => __METHOD__, 'sql' => $sql]);
+        return $this->connection->statement($sql);
     }
 
     /**
@@ -86,8 +80,10 @@ class Trigger
             return false;
         }
 
-        // dump([__METHOD__, 'SQL>> drop trigger "' . $name . '"']);
-        return $this->connection->statement('drop trigger "' . $name . '"');
+        $sql = 'drop trigger ' . $name;
+
+        // dump(['method' => __METHOD__, 'sql' => $sql]);
+        return $this->connection->statement($sql);
     }
 
     /**
@@ -100,9 +96,9 @@ class Trigger
             return false;
         }
 
-        // dump([__METHOD__, "SQL>> SELECT RDB\$TRIGGER_NAME FROM RDB\$TRIGGERS WHERE UPPER(RDB\$TRIGGER_NAME) = UPPER('{$name}')"]);
-        return (bool) $this->connection->selectOne(
-            "SELECT RDB\$TRIGGER_NAME FROM RDB\$TRIGGERS WHERE UPPER(RDB\$TRIGGER_NAME) = UPPER('{$name}')"
-        );
+        $sql = "SELECT RDB\$TRIGGER_NAME FROM RDB\$TRIGGERS WHERE UPPER(RDB\$TRIGGER_NAME) = '" . strtoupper($name) . "'";
+
+        // dump(['method' => __METHOD__, 'sql' => $sql]);
+        return (bool) $this->connection->selectOne($sql);
     }
 }

@@ -22,14 +22,14 @@ class QueryTest extends TestCase
     public function it_can_get()
     {
         factory(TestbenchOrder::class, 3)->create();
-        $users = DB::table('testbench_users')->get();
+        $users = DB::table('TESTBENCH_USERS')->get();
 
         $this->assertCount(3, $users);
         $this->assertInstanceOf(Collection::class, $users);
         $this->assertTrue(is_object($users->first()));
         $this->assertTrue(is_array($users->toArray()));
 
-        $orders = DB::table('testbench_orders')->get();
+        $orders = DB::table('TESTBENCH_ORDERS')->get();
 
         $this->assertCount(3, $orders);
         $this->assertInstanceOf(Collection::class, $orders);
@@ -41,36 +41,36 @@ class QueryTest extends TestCase
     public function it_can_select()
     {
         factory(TestbenchUser::class)->create([
-            'name' => 'Anna',
-            'city' => 'Sydney',
-            'country' => 'Australia',
+            'NAME' => 'Anna',
+            'CITY' => 'Sydney',
+            'COUNTRY' => 'Australia',
         ]);
 
-        $result = DB::table('testbench_users')
-            ->select(['name', 'city', 'country'])
+        $result = DB::table('TESTBENCH_USERS')
+            ->select(['NAME', 'CITY', 'COUNTRY'])
             ->first();
 
         $this->assertCount(3, (array) $result);
 
-        $this->assertObjectHasAttribute('name', $result);
-        $this->assertObjectHasAttribute('city', $result);
-        $this->assertObjectHasAttribute('country', $result);
+        $this->assertObjectHasAttribute('NAME', $result);
+        $this->assertObjectHasAttribute('CITY', $result);
+        $this->assertObjectHasAttribute('COUNTRY', $result);
 
-        $this->assertEquals('Anna', $result->name);
-        $this->assertEquals('Sydney', $result->city);
-        $this->assertEquals('Australia', $result->country);
+        $this->assertEquals('Anna', $result->NAME);
+        $this->assertEquals('Sydney', $result->CITY);
+        $this->assertEquals('Australia', $result->COUNTRY);
     }
 
     /** @test */
     public function it_can_select_with_aliases()
     {
         factory(TestbenchUser::class)->create([
-            'name' => 'Anna',
-            'city' => 'Sydney',
-            'country' => 'Australia',
+            'NAME' => 'Anna',
+            'CITY' => 'Sydney',
+            'COUNTRY' => 'Australia',
         ]);
 
-        $result = DB::table('testbench_users')
+        $result = DB::table('TESTBENCH_USERS')
             ->select([
                 'name as USER_NAME',
                 'city as user_city',
@@ -92,11 +92,11 @@ class QueryTest extends TestCase
     /** @test */
     public function it_can_select_distinct()
     {
-        factory(TestbenchOrder::class, 1)->create(['price' => 10]);
-        factory(TestbenchOrder::class, 10)->create(['price' => 50]);
-        factory(TestbenchOrder::class, 5)->create(['price' => 100]);
+        factory(TestbenchOrder::class, 1)->create(['PRICE' => 10]);
+        factory(TestbenchOrder::class, 10)->create(['PRICE' => 50]);
+        factory(TestbenchOrder::class, 5)->create(['PRICE' => 100]);
 
-        $results = DB::table('testbench_orders')->select('price')->distinct()->get();
+        $results = DB::table('TESTBENCH_ORDERS')->select('PRICE')->distinct()->get();
 
         $this->assertCount(3, $results);
     }
@@ -104,17 +104,17 @@ class QueryTest extends TestCase
     /** @test */
     public function it_can_filter_where_with_results()
     {
-        factory(TestbenchUser::class, 5)->create(['name' => 'Frank']);
-        factory(TestbenchUser::class, 2)->create(['name' => 'Inigo']);
-        factory(TestbenchUser::class, 7)->create(['name' => 'Ashley']);
+        factory(TestbenchUser::class, 5)->create(['NAME' => 'Frank']);
+        factory(TestbenchUser::class, 2)->create(['NAME' => 'Inigo']);
+        factory(TestbenchUser::class, 7)->create(['NAME' => 'Ashley']);
 
-        $results = DB::table('testbench_users')
-            ->where('name', 'Frank')
+        $results = DB::table('TESTBENCH_USERS')
+            ->where('NAME', 'Frank')
             ->get();
 
         $this->assertCount(5, $results);
-        $this->assertCount(1, $results->pluck('name')->unique());
-        $this->assertEquals('Frank', $results->random()->name);
+        $this->assertCount(1, $results->pluck('NAME')->unique());
+        $this->assertEquals('Frank', $results->random()->NAME);
     }
 
     /** @test */
@@ -122,8 +122,8 @@ class QueryTest extends TestCase
     {
         factory(TestbenchUser::class, 25)->create();
 
-        $results = DB::table('testbench_users')
-            ->where('id', 26)
+        $results = DB::table('TESTBENCH_USERS')
+            ->where('ID', 26)
             ->get();
 
         $this->assertCount(0, $results);
