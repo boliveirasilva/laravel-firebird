@@ -16,15 +16,15 @@ class ModelTest extends TestCase
         $id = 100; # TODO: make possible to use autoincrement.
 
         TestbenchUser::create($fields = [
-            'id' => $id,
-            'name' => 'Anna',
-            'email' => 'anna@example.com',
-            'city' => 'Sydney',
-            'state' => 'New South Wales',
-            'post_code' => '2000',
-            'country' => 'Australia',
-            'created_at' => Carbon::now()->toDateTimeString(),
-            'updated_at' => Carbon::now()->toDateTimeString(),
+            'ID' => $id,
+            'NAME' => 'Anna',
+            'EMAIL' => 'anna@example.com',
+            'CITY' => 'Sydney',
+            'STATE' => 'New South Wales',
+            'POST_CODE' => '2000',
+            'COUNTRY' => 'Australia',
+            'CREATED_AT' => Carbon::now()->toDateTimeString(),
+            'UPDATED_AT' => Carbon::now()->toDateTimeString(),
         ]);
 
         $user = TestbenchUser::find($id);

@@ -137,7 +137,9 @@ trait FirebirdAutoIncrement
         // remove "tb_" if exists
         $table = preg_replace('/^tb_/i', '', $table);
 
+        $objectName = strtoupper($type . '_' . $prefix . $table . '_' . $col);
+
         // max object name length is 30 chars
-        return substr($type . '_' . $prefix . $table . '_' . $col, 0, 30);
+        return substr($objectName, 0, 30);
     }
 }

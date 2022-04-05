@@ -27,6 +27,51 @@ class FirebirdGrammar extends Grammar
     );
 
     /**
+     * Wrap a table in keyword identifiers.
+     *
+     * @param  \Illuminate\Database\Query\Expression|string  $table
+     * @return string
+     */
+    public function wrapTable($table)
+    {
+        $tableName = (
+            !$this->isExpression($table)
+            ? $this->wrap($this->tablePrefix.$table, true)
+            : $this->getValue($table)
+        );
+
+        return strtoupper(str_replace('"', '', $tableName));
+    }
+
+    /**
+     * Wrap a value in keyword identifiers.
+     *
+     * @param  \Illuminate\Database\Query\Expression|string  $value
+     * @param  bool    $prefixAlias
+     * @return string
+     */
+    public function wrap($value, $prefixAlias = false)
+    {
+        $data = null;
+
+        if ($this->isExpression($value)) {
+            $data = parent::getValue($value);
+
+        } elseif (strpos(strtolower($value), ' as ') !== false) {
+            // If the value being wrapped has a column alias we will need to separate out
+            // the pieces so we can wrap each of the segments of the expression on it
+            // own, and then joins them both back together with the "as" connector.
+            $data = $this->wrapAliasedValue($value, $prefixAlias);
+
+        } else {
+            $data = $this->wrapSegments(explode('.', $value));
+        }
+
+        return strtoupper(str_replace('"', '', $data));
+    }
+
+
+    /**
      * Compile a select query into SQL.
      *
      * @param Illuminate\Database\Query\Builder

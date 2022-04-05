@@ -35,8 +35,10 @@ class Generator
             $name = $this->connection->getConfig('prefix_schema') . '.' . $name;
         }
 
-        // dump([__METHOD__, 'SQL>> create sequence "' . $name . '"']);
-        return $this->connection->statement('create sequence "' . $name . '"');
+        $sql = 'create sequence ' . $name;
+
+        // dump(['method' => __METHOD__, 'sql' => $sql]);
+        return $this->connection->statement($sql);
     }
 
     /**
@@ -52,8 +54,10 @@ class Generator
             return false;
         }
 
-        // dump([__METHOD__, 'SQL>> drop sequence "' . $name . '"']);
-        return $this->connection->statement('drop sequence "' . $name . '"');
+        $sql = 'drop sequence ' . $name;
+
+        // dump(['method' => __METHOD__, 'sql' => $sql]);
+        return $this->connection->statement($sql);
     }
 
     /**
@@ -68,14 +72,13 @@ class Generator
             return false;
         }
 
-        // dump([__METHOD__, "SQL>>
-        //     SELECT RDB\$GENERATOR_NAME FROM RDB\$GENERATORS
-        //     WHERE RDB\$SYSTEM_FLAG IS DISTINCT FROM 1 AND UPPER(RDB\$GENERATOR_NAME) = UPPER('{$name}')
-        // "]);
-        return (bool) $this->connection->selectOne("
+        $sql =  "
             SELECT RDB\$GENERATOR_NAME FROM RDB\$GENERATORS 
             WHERE RDB\$SYSTEM_FLAG IS DISTINCT FROM 1 AND UPPER(RDB\$GENERATOR_NAME) = UPPER('{$name}')
-        ");
+        ";
+
+        // dump(['method' => __METHOD__, 'sql' => $sql]);
+        return (bool) $this->connection->selectOne($sql);
     }
 
     /**
@@ -90,8 +93,10 @@ class Generator
             return 0;
         }
 
-        // dump([__METHOD__, 'SQL>> SELECT NEXT VALUE FOR "'.$name.'" AS id FROM RDB$DATABASE']);
-        return $this->connection->selectOne('SELECT NEXT VALUE FOR "'.$name.'" AS id FROM RDB$DATABASE')->id;
+        $sql = "SELECT NEXT VALUE FOR {$name} AS id FROM RDB\$DATABASE";
+
+        // dump(['method' => __METHOD__, 'sql' => $sql]);
+        return $this->connection->selectOne($sql)->id;
     }
 
     /**
@@ -118,7 +123,9 @@ class Generator
             return 0;
         }
 
-        // dump([__METHOD__, 'SQL>> SELECT GEN_ID("'.$name.'", 0) AS id FROM RDB$DATABASE']);
-        return $this->connection->selectOne('SELECT GEN_ID("'.$name.'", 0) AS id FROM RDB$DATABASE')->id;
+        $sql = "SELECT GEN_ID({$name}, 0) AS id FROM RDB\$DATABASE";
+
+        // dump(['method' => __METHOD__, 'sql' => $sql]);
+        return $this->connection->selectOne($sql)->id;
     }
 }

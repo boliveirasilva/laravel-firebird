@@ -40,6 +40,24 @@ class Builder extends BaseBuilder
         parent::dropIfExists($table);
     }
 
+    // /**
+    //  * Determine if the given table exists.
+    //  *
+    //  * @param  string  $table
+    //  * @return bool
+    //  */
+    // public function hasTable($table)
+    // {
+    //     $table = $this->connection->getTablePrefix().$table;
+    //
+    //     dump(['method' => __METHOD__, 'table' => $table, 'query' => $this->connection->select(
+    //         $this->grammar->compileTableExists(), [$table]
+    //     )]);
+    //     return count($this->connection->select(
+    //             $this->grammar->compileTableExists(), [$table]
+    //         )) > 0;
+    // }
+
     // public function getColumnListing($table)
     // {
     //     $table = $this->connection->getTablePrefix().$table;

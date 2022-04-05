@@ -31,7 +31,7 @@ class FirebirdGrammar extends Grammar
      */
     public function compileTableExists()
     {
-        return "SELECT RDB\$RELATION_NAME FROM RDB\$RELATIONS WHERE RDB\$RELATION_NAME = ?";
+        return "SELECT RDB\$RELATION_NAME FROM RDB\$RELATIONS WHERE UPPER(RDB\$RELATION_NAME) = UPPER(?)";
     }
 
     /**
@@ -44,6 +44,9 @@ class FirebirdGrammar extends Grammar
     public function compileColumnListing($table)
     {
         return "SELECT TRIM(RDB\$FIELD_NAME) AS \"column_name\" FROM RDB\$RELATION_FIELDS WHERE RDB\$RELATION_NAME = '$table'";
+
+        // dump(['method' => __METHOD__, 'sql' => $sql]);
+        // return $sql;
     }
 
     /**
@@ -60,6 +63,9 @@ class FirebirdGrammar extends Grammar
         $columns = implode(', ', $this->getColumns($blueprint));
 
         return 'create table ' . $this->wrapTable($blueprint) . " ($columns)";
+
+        // dump(['method' => __METHOD__, 'sql' => $sql]);
+        // return $sql;
     }
 
     /**
@@ -72,14 +78,14 @@ class FirebirdGrammar extends Grammar
      */
     public function compileDropIfExists(Blueprint $blueprint, Fluent $command)
     {
-        // Replace the double quotes with single quotes.
-        $table = str_replace('"', "'", $this->wrapTable($blueprint));
-
         return sprintf(
             "execute block as begin if (exists(%s)) then execute statement '%s'; end",
-            str_replace('?', $table, $this->compileTableExists()),
+            str_replace('?', "'".$this->wrapTable($blueprint)."'", $this->compileTableExists()),
             $this->compileDrop($blueprint, $command)
         );
+
+        // dump(['method' => __METHOD__, 'sql' => $sql]);
+        // return $sql;
     }
 
     /**
@@ -92,7 +98,41 @@ class FirebirdGrammar extends Grammar
      */
     public function compileDrop(Blueprint $blueprint, Fluent $command)
     {
-        return 'DROP TABLE ' . $this->wrapTable($blueprint);
+        return 'drop table ' . $this->wrapTable($blueprint);
+        // dump(['method' => __METHOD__, 'sql' => $sql]);
+        // return $sql;
+    }
+
+    /**
+     * Wrap a table in keyword identifiers.
+     *
+     * @param  mixed   $table
+     * @return string
+     */
+    public function wrapTable($table)
+    {
+        $tableName = parent::wrapTable(
+            $table instanceof Blueprint ? $table->getTable() : $table
+        );
+
+        // dump(['method' => __METHOD__, 'table' => strtoupper(str_replace('"', '', $tableName))]);
+        return strtoupper(str_replace('"', '', $tableName));
+    }
+
+    /**
+     * Wrap a value in keyword identifiers.
+     *
+     * @param  \Illuminate\Database\Query\Expression|string  $value
+     * @param  bool    $prefixAlias
+     * @return string
+     */
+    public function wrap($value, $prefixAlias = false)
+    {
+        $data = parent::wrap(
+            $value instanceof Fluent ? $value->name : $value, $prefixAlias
+        );
+
+        return str_replace('"', '', $data);
     }
 
     /**
@@ -108,6 +148,7 @@ class FirebirdGrammar extends Grammar
         $command->name(null);
 
         return $this->compileKey($blueprint, $command, 'primary key');
+        // dump(['method' => __METHOD__, 'sql' => $sql]);
     }
 
     /**
@@ -126,6 +167,7 @@ class FirebirdGrammar extends Grammar
         $table = $this->wrapTable($blueprint);
 
         return "alter table {$table} add {$type} ($columns)";
+        // dump(['method' => __METHOD__, 'sql' => $sql]);
     }
 
     /**
@@ -143,6 +185,7 @@ class FirebirdGrammar extends Grammar
         $table = $this->wrapTable($blueprint);
 
         return "CREATE UNIQUE INDEX " . strtoupper(substr($command->index, 0, 31)) . " ON {$table} ($columns)";
+        // dump(['method' => __METHOD__, 'sql' => $sql]);
     }
 
     /**
@@ -160,6 +203,7 @@ class FirebirdGrammar extends Grammar
         $table = $this->wrapTable($blueprint);
 
         return "CREATE INDEX " . strtoupper(substr($command->index, 0, 31)) . " ON {$table} ($columns)";
+        // dump(['method' => __METHOD__, 'sql' => $sql]);
     }
 
     /**
@@ -198,6 +242,7 @@ class FirebirdGrammar extends Grammar
             $sql .= " on update {$command->onUpdate}";
         }
 
+        // dump(['method' => __METHOD__, 'sql' => $sql]);
         return $sql;
     }
 
@@ -214,6 +259,7 @@ class FirebirdGrammar extends Grammar
         $table = $this->wrapTable($blueprint);
 
         return "alter table {$table} drop constraint {$command->index}";
+        // dump(['method' => __METHOD__, 'sql' => $sql]);
     }
 
     /**
@@ -250,15 +296,13 @@ class FirebirdGrammar extends Grammar
      * @param Blueprint $blueprint
      * @param Fluent    $column
      *
-     * @return string|null
+     * @return string|void
      */
     protected function modifyIncrement(Blueprint $blueprint, Fluent $column)
     {
         if (in_array($column->type, $this->serials) && $column->autoIncrement) {
             return ' primary key';
         }
-
-        return null;
     }
 
     /**
