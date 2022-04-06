@@ -2,3 +2,5 @@
 .DS_Store
 .*.sw?
 .idea
+composer.lock
+phpunit.xml
