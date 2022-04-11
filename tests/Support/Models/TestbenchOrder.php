@@ -10,6 +10,9 @@ class TestbenchOrder extends Model
     use SoftDeletes;
 
     public $incrementing = false;
+    protected $primaryKey = ['ID', 'USER_ID'];
+    const CREATED_AT = 'CREATED_AT';
+    const UPDATED_AT = 'UPDATED_AT';
 
     protected $guarded = [];
 
