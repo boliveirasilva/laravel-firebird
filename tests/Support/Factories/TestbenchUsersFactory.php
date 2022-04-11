@@ -1,45 +1,17 @@
 <?php
 
-// namespace FirebirdTests\Support\Factories;
-//
-// use Carbon\Carbon;
-// use FirebirdTests\Support\Models\User;
-// use Illuminate\Database\Eloquent\Factory;
-//
-// class UsersFactory extends Factory
-// {
-//     protected $model = User::class;
-//
-//     public static $id = 1;
-//
-//     public function definition()
-//     {
-//         return [
-//             'id' => self::$id++,
-//             'name' => $this->faker->name,
-//             'email' => $this->faker->email,
-//             'city' => $this->faker->city,
-//             'state' => $this->faker->state,
-//             'post_code' => $this->faker->postcode,
-//             'country' => $this->faker->country,
-//             'created_at' => Carbon::now(),
-//             'updated_at' => Carbon::now(),
-//         ];
-//     }
-// }
-
 /** @var Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(FirebirdTests\Support\Models\TestbenchUser::class, function (Faker\Generator $faker) {
     return [
-        'id' => $faker->unique()->numberBetween(1),
-        'name' => $faker->name,
-        'email' => $faker->email,
-        'password' => $faker->password,
-        'city' => $faker->city,
-        'state' => $faker->state,
-        'post_code' => $faker->postcode,
-        'country' => $faker->country,
-        'created_at' => $faker->dateTime,
-        'updated_at' => $faker->dateTime,
+        'ID' => $faker->unique()->numberBetween(1),
+        'NAME' => $faker->name,
+        'EMAIL' => $faker->email,
+        'PASSWORD' => $faker->password,
+        'CITY' => $faker->city,
+        'STATE' => $faker->state,
+        'POST_CODE' => $faker->postcode,
+        'COUNTRY' => $faker->country,
+        'CREATED_AT' => $faker->dateTime,
+        'UPDATED_AT' => $faker->dateTime,
     ];
 });
