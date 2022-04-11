@@ -1,8 +1,8 @@
 {
     "name": "boliveirasilva/laravel-firebird",
-    "description": "A Firebird database package for the Laravel Framework",
+    "description": "A Firebird database package for the Laravel 5.4 Framework",
+    "minimum-stability": "stable",
     "license": "MIT",
-    "version": "1.0.0",
     "authors": [
         {
             "name": "Bruno de Oliveira Silva",
@@ -13,7 +13,6 @@
             "email": "jtvanzuydam@gmail.com"
         }
     ],
-    "minimum-stability": "stable",
     "require": {
         "php": ">=5.6.4",
         "ext-pdo": "*",

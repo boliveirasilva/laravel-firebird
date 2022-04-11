@@ -59,7 +59,7 @@ trait MigrateDatabase
             ID INTEGER NOT NULL, 
             USER_ID INTEGER NOT NULL, 
             NAME VARCHAR(255) NOT NULL, 
-            PRICE INTEGER NOT NULL, 
+            PRICE FLOAT NOT NULL, 
             QUANTITY INTEGER NOT NULL, 
             CREATED_AT TIMESTAMP, 
             UPDATED_AT TIMESTAMP, 
@@ -67,7 +67,7 @@ trait MigrateDatabase
         )');
 
         DB::select('ALTER TABLE TESTBENCH_ORDERS ADD CONSTRAINT ORDERS_USER_ID_FOREIGN FOREIGN KEY (USER_ID) REFERENCES TESTBENCH_USERS (ID)');
-        DB::select('ALTER TABLE TESTBENCH_ORDERS ADD PRIMARY KEY (ID)');
+        DB::select('ALTER TABLE TESTBENCH_ORDERS ADD PRIMARY KEY (ID, USER_ID)');
     }
 
     public function dropTables()
