@@ -61,7 +61,7 @@ class FirebirdGrammar extends Grammar
             // If the value being wrapped has a column alias we will need to separate out
             // the pieces so we can wrap each of the segments of the expression on it
             // own, and then joins them both back together with the "as" connector.
-            $data = $this->wrapAliasedValue($value, $prefixAlias);
+            return $this->wrapAliasedValue($value, $prefixAlias);
 
         } else {
             $data = $this->wrapSegments(explode('.', $value));
